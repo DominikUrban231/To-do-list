@@ -1,0 +1,246 @@
+body {
+    background-color: rgb(245, 245, 245);
+}
+
+.container {
+    margin: auto;
+    max-width: 700px;
+    padding-inline: 32px;
+}
+
+.interface {
+    background-color: white;
+    box-shadow: 1px 1px 5px  rgb(0, 0, 0);
+    z-index: 0;
+    
+}
+
+/* Tytuł strony */
+
+.title {
+    text-align: center;
+    font-family: copperplate;
+    font-size: 6em;
+    margin: 5%;
+}
+
+/* formulaz */
+
+.entering {
+    display: flex;
+}
+
+.form {
+    display: flex;
+    /* height: 60px; */
+    justify-content: flex-start;
+    align-items: center;
+    padding-block: 15px;
+    width: 100%;
+    /* border: 4px blue double; */
+}
+
+.input {
+    border: none;
+    box-shadow: none;
+    width: 100%;
+}
+
+
+input {
+    background: none;
+    border: none;
+    color: rgb(83, 83, 83);
+    font-size: 1.4em;
+    width: 100%;
+
+}
+
+.field {
+    width: 100%;
+}
+
+
+/* wszystki notatki */
+
+.imgCheck {
+    display: none;
+}
+
+.notes {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.main-note {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+
+.main-note > div {
+    display: flex;
+}
+
+.inputText {
+    padding-left: 15px;
+    display: flex;
+}
+
+
+.textEdit {
+    width: 100%;
+}
+
+.taskDone {
+    text-decoration: line-through;
+}
+
+
+.dash {
+    border: 1px solid rgb(237, 237, 237);
+}
+
+.settings {
+    color: rgb(182, 182, 182);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    /* border: 4px green dashed; */
+}
+
+
+/* Przyciski */
+
+.buttons {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    background: none;
+    border: 1px solid white;
+    border-radius: 3px;
+    color: rgb(182, 182, 182);
+}
+
+.button:hover {
+    border: 1px solid rgb(182, 182, 182);
+}
+
+.button:active {
+    background-color: rgb(221, 221, 221);
+}
+
+.btnCheck {
+    border-radius: 50%;
+    border: 2px solid rgb(240, 240, 240);
+    padding: 25px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.how-much-left {
+    padding-inline: 16px;
+}
+
+.tab {
+    height: 5px;
+    background-color: white;
+    z-index: -1;
+    margin: auto;
+    box-shadow: 0px 0px 5px black;
+
+}
+
+#tab1 {
+    width: 99%;
+}
+
+#tab2 {
+    width: 98%;
+}
+
+#tab3 {
+    width: 97%;
+}
+
+/* browser's default checkbox */
+
+/* #checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+} */
+
+
+
+/* ----------------- Icons -------------------- */
+
+/* The container
+.container {
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+  }
+  
+  /* Hide the browser's default checkbox */
+  /* .container input {
+    opacity: 0;
+    height: 0;
+    width: 0;
+  } */
+  
+  /* Create a custom checkbox */
+  /* .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee; */
+  }
+  
+  /* On mouse-over, add a grey background color */
+  /* .container:hover input ~ .checkmark {
+    background-color: #ccc;
+  } */
+  
+  /* When the checkbox is checked, add a blue background */
+  /* .container input:checked ~ .checkmark {
+    background-color: #2196F3;
+  } */
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  /* .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  } */
+  
+  /* Show the checkmark when checked */
+  /* .container input:checked ~ .checkmark:after {
+    display: block;
+  } */
+  
+  /* Style the checkmark/indicator */
+  /* .container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }  */
