@@ -26,11 +26,11 @@ const getTaskId = e => findNote(e).id;
 
 const findNote = e => e.target.closest(".note");
 
-const findNoteImg = e => findNote(e).querySelector("img");
+const findBtnCheck = e => findNote(e).querySelector(".btnCheck");
+
+const findNoteInput = e => findNote(e).querySelector(".textEdit");
 
 const findNoteText = e => findNoteInput(e).value;
-
-const findNoteInput = e => findNote(e).querySelector("input");
 
 const removeDisabled = e => e.target.removeAttribute("disabled");
 
@@ -65,21 +65,14 @@ const getFromLocalStorage = () => {
 
 const createTaskHTML = (taskObject) => {
 
-  // const img1 = new Image();
-  // const img2 = new Image();
-
-  // img1.src = `icons/task_alt_FILL0_wght400_GRAD0_opsz48.svg`;
-  // img2.src = `icons/delete_FILL0_wght400_GRAD0_opsz48.svg`;
 
   const taskHTML = `
   <div class="main-note">
 
-      <div>
-        <button class="btnCheck button"><img class="imgCheck" src="icons/task_alt_FILL0_wght400_GRAD0_opsz48.svg"/></button>
-      </div>
+      <div class="${taskObject.status == "Active" ?  "btnCheck" : "btnCheck taskDone"}"></div>
 
       <div class="input inputText">
-        <input class="textEdit" disabled value="${taskObject.value}"></input>
+        <input class="${taskObject.status == "Active" ?  "textEdit" : "textEdit line-through"}" disabled value="${taskObject.value}"></input>
       </div>
 
       <div>
@@ -205,16 +198,45 @@ const setAllTasksAsCompleted = () => {
   
 // ----------------------- Przycisk - oznacz jako ukończone -------------------- //
 
+// visibility: hidden
+
 
 const onClickBtnCheck = e => {
 
   const taskStatus = tasksMap.get(getTaskId(e)).status;
 
-  taskStatus == "Active" ? findNoteImg(e).classList.remove("hidden") : findNoteImg(e).classList.add("hidden"); // pokazywanie / ukrywanie ikony "wykonane"
+  // if(taskStatus == "Active") {
+  //   findNoteImg(e).classList.add("taskDone")
+  // } 
+  
+  // if(taskStatus == "Completed")  {
+  //   if(findNoteImg(e).classList.contains("taskDone")) {
+  //     findNoteImg(e).classList.remove("taskDone")
+  //   }
+  // }
+  console.log(findBtnCheck(e))
 
-  tasksMap.set(getTaskId(e), { value: findNoteText(e), status: taskStatus == "Active" ? "Completed" : "Active", id: getTaskId(e) }); // zmiana statusu zadania w mappie
+  // findBtnCheck(e).className = "btnCheck taskDOne"
 
-  taskStatus == "Active" ? findNoteInput(e).classList.add("taskDone") : findNoteInput(e).classList.remove("taskDone"); // przekreślanie / odkreślanie zawartości notatki
+  // const findNoteImgClasslist = findNoteImg(e).classList;
+
+  // findBtnCheck(e).className = taskStatus == "Active" ?  "btnCheck taskDone" : "btnCheck"; // pokazywanie / ukrywanie ikony "wykonane"
+
+  // findNoteInput(e).className = taskStatus == "Active" ?  "line-through textEdit" : "textEdit"; // przekreślanie / odkreślanie zawartości notatki
+
+  tasksMap.set(getTaskId(e), { value: findNoteText(e), status: taskStatus == "Active" ? "Completed" : "Active", id: getTaskId(e) }); // zmiana statusu zadania w mapie
+
+
+  // taskStatus == "Active" ? findNoteInput(e).classList.add("taskDone") : findNoteInput(e).classList.remove("taskDone"); // 
+
+
+
+
+  // taskStatus == "Active" ? (findNoteImgClasslist.remove("hidden") || findNoteImgClasslist.remove("btnCheck")) : (findNoteImgClasslist.add("hidden") || findNoteImgClasslist.add("btnCheck")); // 
+
+  // console.log()
+
+
 
 }
 
@@ -307,18 +329,6 @@ const howMuchLeft = () => {
   document.querySelector(".items-left").innerText = activeTasksLeft
 
 }
-
-
-
-
-
-
-// const remaining_element = collection.filter((val, key) => val % 2 == 0); 
-
-
-
-
-
 
 
 

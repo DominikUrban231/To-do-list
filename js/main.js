@@ -100,17 +100,17 @@ addEventListener("keyup", e => {
 
       addEventListener("click", e => {
 
-        if(e.target.classList.contains("btnCheck" || "imgCheck")) {
+        if(e.target.classList.contains("btnCheck")) {
 
           console.log("btnCheck", e.target)
 
           onClickBtnCheck(e);
 
-          transferMapToLocalStorage(); // przekazanie zadania do localStorage
-
           deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
 
           generateTasks() // Generowanie listy zadań na stronie
+
+          transferMapToLocalStorage(); // przekazanie zadania do localStorage
 
           howMuchLeft();
 
@@ -199,16 +199,3 @@ addEventListener("keyup", e => {
         howMuchLeft();
 
       });
-
-
-      // próbne
-
-      const próbny = document.querySelector(".próbny");
-
-      
-      document.querySelector(".próbny")?.addEventListener("click", e => {
-       e.target.classList.add("hidden")
-       console.log("próbny", próbny)
-
-      })
-
