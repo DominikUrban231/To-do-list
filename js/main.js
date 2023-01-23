@@ -1,6 +1,6 @@
-import { getFromLocalStorage, generateTasks, showCompletedTasks, createTask, transferMapToLocalStorage, 
-  deleteAllTasksInHTML, deleteTask, showActiveTasks, clearCompleted, 
-  removeDisabled, addNewTextToMap, setDisabled, howMuchLeft, onClickBtnCheck, setAllTasksAsCompleted} from "./backstage.js";
+import { getFromLocalStorage, generateTasks, createTask, transferMapToLocalStorage, deleteTask, clearCompleted, 
+  removeDisabled, addNewTextToMap, howMuchLeft, toggleChangeStatusTaskInMap, 
+  setAllTasksAsCompleted, whichIsActiveToAll} from "./backstage.js";
 
 
 const btnAll = document.querySelector("#btnAll"),
@@ -16,12 +16,15 @@ const form = document.querySelector(".form");
 
 
 
+
 // ------------------- Po odświerzeniu strony --------------------- //
 
 
 getFromLocalStorage() // Pobieranie z local storage istniejących zadań
 
-howMuchLeft();
+howMuchLeft(); // ile aktywnych zadań zostało
+
+whichIsActiveToAll(); // zmiana statusu zmiennej na null
 
 generateTasks() // Generowanie listy zadań na stronie
 
@@ -39,7 +42,7 @@ form?.addEventListener("submit", e => {
 
   transferMapToLocalStorage(); // przekazanie zadania do localStorage
 
-  howMuchLeft();
+  howMuchLeft(); // ile aktywnych zadań zostało
 
 }) 
 
@@ -52,8 +55,6 @@ addEventListener("click", e => {
   if(e.target.classList.contains("textEdit")) {
 
     removeDisabled(e)
-
-    console.log("mozna wpisywać")
   
 }});
 
@@ -61,14 +62,13 @@ addEventListener("click", e => {
 
 addEventListener("keyup", e => {
 
-
   if(e.target.classList.contains("textEdit")) {
 
     addNewTextToMap(e);
 
     transferMapToLocalStorage();
 
-    howMuchLeft();
+    howMuchLeft(); // ile aktywnych zadań zostało
   
 }})
 
@@ -88,9 +88,7 @@ addEventListener("keyup", e => {
 
       setAllTasksAsCompleted(); // zmiana statusu wszystkich zadań
 
-      transferMapToLocalStorage(); // przekazanie zadania do localStorage
-
-      howMuchLeft();
+      generateTasks() // Generowanie listy zadań na stronie
 
     })
 
@@ -102,17 +100,9 @@ addEventListener("keyup", e => {
 
         if(e.target.classList.contains("btnCheck")) {
 
-          console.log("btnCheck", e.target)
-
-          onClickBtnCheck(e);
-
-          deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
+          toggleChangeStatusTaskInMap(e);
 
           generateTasks() // Generowanie listy zadań na stronie
-
-          transferMapToLocalStorage(); // przekazanie zadania do localStorage
-
-          howMuchLeft();
 
         }
       })
@@ -125,13 +115,11 @@ addEventListener("keyup", e => {
 
       if(e.target.classList.contains("imgDelete")) {
 
-        console.log("e.target dla btnDelete", e.target)
-
         deleteTask(e); // usuwanie zadania
 
         transferMapToLocalStorage(); // przekazanie mapy do localStorage
 
-        howMuchLeft();
+        howMuchLeft(); // ile aktywnych zadań zostało
 
       }});
     
@@ -145,12 +133,7 @@ addEventListener("keyup", e => {
 
       btnAll?.addEventListener("click", e => {
 
-
-          deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
-
-          generateTasks() // Generowanie listy zadań na stronie
-
-          howMuchLeft();
+        generateTasks("All") // Generowanie listy zadań na stronie
 
       });
     
@@ -160,11 +143,7 @@ addEventListener("keyup", e => {
 
       btnActive?.addEventListener("click", e => {
 
-        deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
-        
-        showActiveTasks(); // generowanie aktywnych zadań na stronie
-
-        howMuchLeft();
+        generateTasks("Active") // Generowanie listy zadań na stronie
 
       });
 
@@ -174,11 +153,7 @@ addEventListener("keyup", e => {
 
       btnCompleted?.addEventListener("click", e => {
 
-        deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
-
-        showCompletedTasks(); // pobranie z localStorage
-
-        howMuchLeft();
+        generateTasks("Completed") // Generowanie listy zadań na stronie
 
       });
 
@@ -188,14 +163,8 @@ addEventListener("keyup", e => {
 
       btnClearCompleted?.addEventListener("click", e => {
 
-        deleteAllTasksInHTML();
-
-        showActiveTasks(); // generowanie aktywnych zadań na stronie
-
         clearCompleted(); // usówanie wykonanych zadań z mapy
 
-        transferMapToLocalStorage(); // przekazanie mapy do localStorage
+        generateTasks("All") // Generowanie listy zadań na stronie
 
-        howMuchLeft();
-
-      });
+      });      

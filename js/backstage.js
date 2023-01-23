@@ -1,22 +1,33 @@
-// stałe i zmienne
+// -------------------- Stae ----------------------------------------------- //
+
 
 const form = document.querySelector(".form");
 
 const notes = document.querySelector(".notes");
 
 
-// tworzenie tablicy z zadaniami jako "mapa"
+// -------------------- Mapa i zmienne ------------------------------------- //
+
 
 let tasksMap = new Map();
 
-let toggleActiveTasks = false;
+let toggleActiveTasks = "Active";
+
+let whichIsActive = "All";
 
 
 // ------------------------------ SEGMENTY -------------------------------- //
 
+
+const activeTasksFromMap = () => mapToArray().filter(el => el.status === "Active");
+
+const completedTasksFromMap = () => mapToArray().filter(el => el.status === "Completed");
+
+const generatingTask = data => data.forEach(element => {createTaskHTML(element)});
+
 const classList = e => e.target.classList;
 
-const mapToArray = () => [...tasksMap.values()]
+const mapToArray = () => [...tasksMap.values()];
 
 const contentsOfTheNote = e => e.target.note.value;
 
@@ -40,14 +51,15 @@ const deleteAllTasksInHTML = () => document.querySelectorAll(".note").forEach(el
 
 const transferMapToLocalStorage = () => localStorage.setItem("todos", JSON.stringify(Object.fromEntries(tasksMap)));
 
-const activeTasksLenght = () => [...tasksMap].filter(el => el.status === "Active").length
+const whichIsActiveToSessionStorage = (activeButton) => sessionStorage.setItem("whichButtonIsActive", activeButton);
+
+const whichIsActiveFromSessionStorage = () => whichIsActive = sessionStorage.getItem("whichButtonIsActive");
+
+const activeTasksLenght = () => [...tasksMap].filter(el => el.status === "Active").length;
 
 
+// -------------------- Pobieranie z local storage ------------------------------------- //
 
-
-// ---------------------------------------- //
-
-// Pobieranie z local storage
 
 const getFromLocalStorage = () => {
 
@@ -55,13 +67,8 @@ const getFromLocalStorage = () => {
 
     tasksMap = new Map(Object.entries(JSON.parse(localStorage.getItem("todos"))));
 
-    console.log(tasksMap);
-
   }
 }
-
-
-// przekazuj tablice z zadaniami: wszystkie, aktywne, wykonane
 
 const createTaskHTML = (taskObject) => {
 
@@ -69,7 +76,7 @@ const createTaskHTML = (taskObject) => {
   const taskHTML = `
   <div class="main-note">
 
-      <div class="${taskObject.status == "Active" ?  "btnCheck" : "btnCheck taskDone"}"></div>
+      <div class="${taskObject.status == "Active" ?  "btnCheck Active" : "btnCheck taskDone"}"></div>
 
       <div class="input inputText">
         <input class="${taskObject.status == "Active" ?  "textEdit" : "textEdit line-through"}" disabled value="${taskObject.value}"></input>
@@ -94,30 +101,51 @@ placeForTask?.prepend(div);
 }
 
 
-// Generowanie zadań
+// -------------------- Generowanie zadań ------------------------------------- //
 
-const generateTasks = (tasks) => {
-  const data = !tasks ? tasksMap : tasks;
 
-  data.forEach(element => {
-    console.log("generateTasks", element);
-    createTaskHTML(element);
-  })
+const generateTasks = (activeButton) => {
+
+  transferMapToLocalStorage(); // przekazanie zadania do localStorage
+
+  deleteAllTasksInHTML(); //  usuwanie wszystkich zadań na stronie 
+
+  if(activeButton) {
+
+    whichIsActiveToSessionStorage(activeButton); // aktywny przycisk do sessionStorage
+
+  }
+
+  whichIsActiveFromSessionStorage() // pobranie aktywnego przycisku z sessionStorage
+
+  console.log("który jest aktywny", whichIsActive);
+
+  if ( whichIsActive == "Active") {
+
+    generatingTask(activeTasksFromMap());
+
+  } else if (  whichIsActive == "Completed") {
+
+    generatingTask(completedTasksFromMap());
+
+  } else if(whichIsActive == "All") {
+
+    generatingTask(mapToArray());
+
+
+  };
+
+  howMuchLeft(); // ile aktywnych zadań zostało
+
+
 };
 
 
+// -------------------- Tworzenie nowego zadania ------------------------------ //
 
-
-// ----------------------------------------------------- //
-
-
-
-// Tworzenie nowego zadania
 
 const createTask = e => {
   let usedId = Date.now().toString();
-
-  console.log("usedId", usedId);
 
   let task = {
     value: contentsOfTheNote(e),
@@ -125,54 +153,17 @@ const createTask = e => {
     id: usedId,
   };
 
-
-
-
-  console.log("createTask", e.target);
   createTaskHTML(task);
+
   tasksMap.set(usedId, task)
 
-  console.log("tasksMap", tasksMap);
-
-
 };
 
-// dodawanie obrazów do przycisków
+
+// ----------------------------- Edycja zadania ------------------------------- //
 
 
-  // document.querySelector("btnCheck")?.append(img1)
-  
-
-
-
-// Przekazywanie mapy do localStorage
-
-
-
-
-
-// ----------------------------- Edycja zadania -------------------------- //
-
-
-const addNewTextToMap = e => {
-
-  // 1. pobierz wpisaną wartość
-
-  const value = e.target.value;
-
-  // 2. pobierz ID edytowanej notatki
-
-  // getTaskId()
-
-  console.log("addNewTextToMap", tasksMap)
-
-  // 3. uaktualnij mapę o nowy tekst korzystając z ID zadania
-
-  tasksMap.set(getTaskId(e), { value: value, status: "Active", id: getTaskId(e) });
-
-  console.log("addNewTextToMap", tasksMap)
-
-};
+const addNewTextToMap = e => tasksMap.set(getTaskId(e), { value: e.target.value, status: "Active", id: getTaskId(e) });
 
 
 // ----------------------- Przycisk - oznacz wszystkie jako ukończone --------- //
@@ -192,118 +183,43 @@ const setAllTasksAsCompleted = () => {
 
 }
 
-
-
-
   
 // ----------------------- Przycisk - oznacz jako ukończone -------------------- //
 
-// visibility: hidden
 
-
-const onClickBtnCheck = e => {
+const toggleChangeStatusTaskInMap = e => {
 
   const taskStatus = tasksMap.get(getTaskId(e)).status;
 
-  // if(taskStatus == "Active") {
-  //   findNoteImg(e).classList.add("taskDone")
-  // } 
-  
-  // if(taskStatus == "Completed")  {
-  //   if(findNoteImg(e).classList.contains("taskDone")) {
-  //     findNoteImg(e).classList.remove("taskDone")
-  //   }
-  // }
-  console.log(findBtnCheck(e))
-
-  // findBtnCheck(e).className = "btnCheck taskDOne"
-
-  // const findNoteImgClasslist = findNoteImg(e).classList;
-
-  // findBtnCheck(e).className = taskStatus == "Active" ?  "btnCheck taskDone" : "btnCheck"; // pokazywanie / ukrywanie ikony "wykonane"
-
-  // findNoteInput(e).className = taskStatus == "Active" ?  "line-through textEdit" : "textEdit"; // przekreślanie / odkreślanie zawartości notatki
-
   tasksMap.set(getTaskId(e), { value: findNoteText(e), status: taskStatus == "Active" ? "Completed" : "Active", id: getTaskId(e) }); // zmiana statusu zadania w mapie
-
-
-  // taskStatus == "Active" ? findNoteInput(e).classList.add("taskDone") : findNoteInput(e).classList.remove("taskDone"); // 
-
-
-
-
-  // taskStatus == "Active" ? (findNoteImgClasslist.remove("hidden") || findNoteImgClasslist.remove("btnCheck")) : (findNoteImgClasslist.add("hidden") || findNoteImgClasslist.add("btnCheck")); // 
-
-  // console.log()
-
-
 
 }
 
 
-
-
-// ----------------------- Przycisk usuwania zadania -------------------- //
+// ----------------------- Przycisk usuwania zadania --------------------------- //
 
 
 const deleteTask = e => {
 
   tasksMap.delete(getTaskId(e));
 
-  console.log(tasksMap);
-
   removeNote(e);
 
 }
 
 
-// ----------------------- Przycisk - Active -------------------- //
-
-// aktywne
-
-const showActiveTasks = () => {
-
-  // 1. stwórz nową mapę tylko z zadaniami aktywnymi
-  // 2. iteruj po mapie aby stworzyć nową mapę
-  // 3. znajdź odnośnik do zadań aktywnych
+// ----------------------- Przycisk - All -------------------------------------- //
 
 
-  const tasksMapArray = mapToArray();
-
-  const filterTasksMap = tasksMapArray.filter(el => el.status === "Active");
-
-  console.log(filterTasksMap);
-
-  deleteAllTasksInHTML();
-
-  generateTasks(filterTasksMap);
-
-};
-
-// ---------------------- Przycisk - Completed -------------------- //
-
-const showCompletedTasks = () => {
-
-  const tasksMapArray = mapToArray();
-
-  const filterTasksMap = tasksMapArray.filter(el => el.status === "Completed");
-
-  deleteAllTasksInHTML();
-
-  generateTasks(filterTasksMap);
-
-};
+const whichIsActiveToAll = () => whichIsActive = "All";
 
 
-// ----------------- Przycisk - Clear Completed ---------------- //
+// ----------------- Przycisk - Clear Completed ------------------------------- //
 
-// usuwanie wykonanych zadań
 
 const clearCompleted = () => {
 
-  [...tasksMap.values()].forEach(object => {
-
-    console.log(object)
+  mapToArray().forEach(object => {
 
     if (object.status === "Completed") {
 
@@ -311,29 +227,22 @@ const clearCompleted = () => {
 
     }
 
-
   });
 };
 
 
-// ----------------- How much left --------------------------------------- //
+// ----------------- How much left ------------------------------------------ //
 
 const howMuchLeft = () => {
 
-  const tasksMapArray = mapToArray(); // zamiana mapy na tablicę
-
-  const activeTasksLeft = tasksMapArray.filter(el => el.status === "Active").length;
-
-  console.log(`howMuchLeft`, activeTasksLeft)
+  const activeTasksLeft = mapToArray().filter(el => el.status === "Active").length;
 
   document.querySelector(".items-left").innerText = activeTasksLeft
 
 }
 
 
-
 export {
-  getFromLocalStorage, generateTasks, showCompletedTasks, createTask, transferMapToLocalStorage,
-  deleteAllTasksInHTML, deleteTask, showActiveTasks, clearCompleted,
-  removeDisabled, addNewTextToMap, setDisabled, howMuchLeft, onClickBtnCheck, setAllTasksAsCompleted
+  getFromLocalStorage, generateTasks, createTask, transferMapToLocalStorage, deleteAllTasksInHTML, deleteTask, clearCompleted,
+  removeDisabled, addNewTextToMap, setDisabled, howMuchLeft, toggleChangeStatusTaskInMap, setAllTasksAsCompleted, whichIsActiveToAll, whichIsActiveToSessionStorage, whichIsActiveFromSessionStorage, activeTasksFromMap
 }
